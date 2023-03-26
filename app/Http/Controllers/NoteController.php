@@ -17,6 +17,24 @@ class NoteController extends Controller
         ]);
     }
 
+    public function create() {
+        return view('notes.create');
+    }
+
+    public function store(Request $request) {
+        $attributes = $request->validate([
+            'title' => 'required|max:255',
+            'content' => 'required',
+        ]);
+
+        $attributes['user_id'] = auth()->user()->id;
+        $attributes['slug'] = Str::slug($attributes['title']);
+
+        Note::create($attributes);
+
+        return redirect()->route('notes.index');
+    }
+
     public function edit($note) {
         $note = auth()->user()
             ->notes()
@@ -34,7 +52,7 @@ class NoteController extends Controller
             'content' => 'required',
         ]);
 
-        $attributes['slug'] = Str::slug('title');
+        $attributes['slug'] = Str::slug($attributes['title']);
 
         $note->update($attributes);
 
