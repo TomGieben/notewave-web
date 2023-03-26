@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\NoteController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,10 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+
+Route::controller(ApiController::class)->group(function() {
+    Route::post('api/authenticate', 'authenticate');
+});
 
 Route::group(['middleware' => ["auth"]], function () {
     Route::controller(NoteController::class)->group(function() {

@@ -3,31 +3,51 @@
 namespace App\Http\Controllers;
 
 use App\Models\Note;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class NoteController extends Controller
 {
     public function index() {
-        $notes = Note::all();
+        $notes = auth()->user()->notes()->get();
 
         return view('notes.index', [
             'notes' => $notes,
         ]);
     }
 
-    public function edit(Note $note) {
+    public function edit($note) {
+        $note = auth()->user()
+            ->notes()
+            ->where('slug', $note)
+            ->firstOrFail();
+
         return view('notes.edit', [
             'note' => $note,
         ]);
     }
 
     public function update(Request $request, Note $note) {
-        $validated = $request->validate([
-            // 'title' => 'required|max:255',
+        $attributes = $request->validate([
+            'title' => 'required|max:255',
             'content' => 'required',
         ]);
 
-        $note->update($validated);
+        $attributes['slug'] = Str::slug('title');
+
+        $note->update($attributes);
+
+        return redirect()->route('notes.index');
+    }
+
+    public function destroy($note) {
+        $note = auth()->user()
+            ->notes()
+            ->where('slug', $note)
+            ->firstOrFail();
+
+        $note->delete();
 
         return redirect()->route('notes.index');
     }
