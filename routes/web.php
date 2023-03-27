@@ -23,6 +23,7 @@ Auth::routes();
 
 Route::controller(ApiController::class)->group(function() {
     Route::post('api/authenticate', 'authenticate');
+    Route::post('api/query', 'query');
 });
 
 Route::group(['middleware' => ["auth"]], function () {
