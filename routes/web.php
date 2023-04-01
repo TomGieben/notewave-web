@@ -22,13 +22,15 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::controller(ApiController::class)->group(function() {
-    Route::post('api/authenticate', 'authenticate');
-    Route::post('api/query', 'query');
+    Route::post('api/authenticate', 'authenticate')->name('api.authenticate');
+    Route::post('api/query', 'query')->name('api.query');
 });
 
 Route::group(['middleware' => ["auth"]], function () {
+    Route::resource('notes', NoteController::class);
     Route::controller(NoteController::class)->group(function() {
-        Route::resource('notes', NoteController::class);
+        Route::get('notes/{note}/share', 'share')->name('notes.share');
+        Route::patch('notes/{note}/restore', 'restore')->name('notes.restore');
     });
 });
 

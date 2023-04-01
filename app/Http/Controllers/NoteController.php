@@ -5,12 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Note;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class NoteController extends Controller
 {
     public function index() {
-        $notes = auth()->user()->notes()->get();
+        $trashed = request()->has('trashed');
+        $notes = auth()
+            ->user()
+            ->notes()
+            ->when($trashed, function($query) {
+                $query->onlyTrashed();
+            })
+            ->get();
 
         return view('notes.index', [
             'notes' => $notes,
@@ -28,6 +36,7 @@ class NoteController extends Controller
         ]);
 
         $attributes['user_id'] = auth()->user()->id;
+        $attributes['is_public'] = $request->has('is_public');
         $attributes['slug'] = Str::slug($attributes['title']);
 
         Note::create($attributes);
@@ -52,6 +61,7 @@ class NoteController extends Controller
             'content' => 'required',
         ]);
 
+        $attributes['is_public'] = $request->has('is_public');
         $attributes['slug'] = Str::slug($attributes['title']);
 
         $note->update($attributes);
@@ -68,5 +78,28 @@ class NoteController extends Controller
         $note->delete();
 
         return redirect()->route('notes.index');
+    }
+
+    public function restore($note) {
+        $note = auth()->user()
+            ->notes()
+            ->onlyTrashed()
+            ->where('slug', $note)
+            ->firstOrFail();
+
+        $note->restore();
+
+        return redirect()->route('notes.index');
+    }
+
+    public function share($sharingKey) {
+        $note = Note::query()
+            ->where('sharing_key', $sharingKey)
+            ->where('is_public', true)
+            ->firstOrFail();
+
+        return view('notes.show', [
+            'note' => $note,
+        ]);
     }
 }
