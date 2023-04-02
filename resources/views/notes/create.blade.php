@@ -2,16 +2,16 @@
 
 @section('content')
 <div class="container">
-    <ul class="nav nav-pills p-3 bg-white mb-3 rounded-pill align-items-center">
-        <li class="nav-item">
+    <div class="row justify-content-between mb-3 p-2 bg-white rounded-pill align-items-center">
+        <div class="col-auto">
             <h3 class="mt-2 ms-1">{{ __('Create note') }}</h3>
-        </li>
-        <li class="nav-item ms-auto">
+        </div>
+        <div class="col-auto">
             <a class="btn rounded-pill bg-primary" href="{{ route('notes.index') }}" title="Back">
                 <i class="fas fa-times text-white"></i>
             </a>
-        </li>
-    </ul>
+        </div>
+    </div>
     
     <form action="{{ route('notes.store') }}" method="post">
         @method('POST')

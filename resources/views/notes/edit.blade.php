@@ -5,16 +5,16 @@
     <input type="hidden" name="note_share_link" value="{{ $note->getShareLink() }}">
     <input type="hidden" name="note_is_public" value="{{ $note->is_public }}">
 
-    <ul class="nav nav-pills p-3 bg-white mb-3 rounded-pill align-items-center">
-        <li class="nav-item">
+    <div class="row justify-content-between mb-3 p-2 bg-white rounded-pill align-items-center">
+        <div class="col-auto">
             <h3 class="mt-2 ms-1">{{ __('Edit note') }}</h3>
-        </li>
-        <li class="nav-item ms-auto">
+        </div>
+        <div class="col-auto">
             <a class="btn rounded-pill bg-primary" href="{{ route('notes.index') }}" title="Back">
                 <i class="fas fa-times text-white"></i>
             </a>
-        </li>
-    </ul>
+        </div>
+    </div>
 
     <form action="{{ route('notes.update', [$note]) }}" method="post">
         @method('PUT')

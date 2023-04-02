@@ -18,7 +18,7 @@ class NoteController extends Controller
             ->when($trashed, function($query) {
                 $query->onlyTrashed();
             })
-            ->get();
+            ->paginate(12);
 
         return view('notes.index', [
             'notes' => $notes,

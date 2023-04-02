@@ -22,19 +22,20 @@
             </a>
         </li>
     </ul>
-    <div class="tab-content bg-transparent">
-        <div class="row">
-            @if($notes->isNotEmpty())
-                @foreach ($notes as $note)
-                    <x-note-card :note="$note"/>
-                @endforeach
-            @else
-                <div class="col-12">
-                    <div class="rounded-pill alert alert-info mt-2">
-                        No result was found
-                    </div>
+    <div class="row">
+        @if($notes->isNotEmpty())
+            @foreach ($notes as $note)
+                <x-note-card :note="$note"/>
+            @endforeach
+        @else
+            <div class="col-12">
+                <div class="alert alert-info mt-2">
+                    {{ __('No result was found') }}
                 </div>
-            @endif
+            </div>
+        @endif
+        <div class="d-flex justify-content-center">
+            {{ $notes->links() }}
         </div>
     </div>
 </div>
