@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Note;
+use App\Models\SharedNote;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -20,8 +21,14 @@ class NoteController extends Controller
             })
             ->paginate(12);
 
+        $sharedNotes = auth()
+            ->user()
+            ->sharedNotes()
+            ->get();
+
         return view('notes.index', [
             'notes' => $notes,
+            'sharedNotes' => $sharedNotes,
         ]);
     }
 
@@ -100,6 +107,18 @@ class NoteController extends Controller
 
         return view('notes.show', [
             'note' => $note,
+        ]);
+    }
+
+    public function add(Request $request) {
+        $note = Note::query()
+            ->where('sharing_key', $request->sharing_key)
+            ->where('is_public', true)
+            ->firstOrFail();
+        
+        SharedNote::create([
+            'user_id' => auth()->user()->id,
+            'note_id' => $note->id
         ]);
     }
 }

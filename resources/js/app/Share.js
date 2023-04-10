@@ -13,7 +13,7 @@ window.Share = class Share {
         let html = `
             <div class="d-flex w-100 justify-content-between">
                 <div class="col-auto">
-                    <b>Share youre note</b>
+                    <b>Share your note</b>
                 </div>
                 <div class="col-auto">
                     ${status}
@@ -24,7 +24,7 @@ window.Share = class Share {
         html += `
             <div class="input-group mt-4">
                 <input class="form-control" value="${link}" disabled>
-                <button type="button" onclick="Share.copy(this)" class="btn btn-success">
+                <button title="Copy" type="button" onclick="Share.copy(this)" class="btn btn-success">
                     <i class="fas fa-link"></i> Copy
                 </button>
             </div>
@@ -57,6 +57,67 @@ window.Share = class Share {
         }
 
         document.body.removeChild(textArea);
+        button.disabled = true;
+        button.innerHTML = icon;
+    }
+
+    static add() {
+        let html = `
+            <div class="d-flex w-100 justify-content-between">
+                <div class="col-auto">
+                    <b>Store this note</b>
+                </div>
+            </div>
+        `;
+
+        html += `
+            <div class="alert alert-warning mt-3 p-1">
+                <small>The note will be added to your own notes</small>
+            </div>
+            <div class="d-flex w-100 justify-content-between">
+                <div class="col-auto">
+                    <button title="Confirm" type="button" onclick="Share.store(this)" class="btn btn-success">
+                        <i class="fas fa-check"></i> Confirm
+                    </button>
+                </div>
+                <div class="col-auto">
+                    <button title="Refuse" type="button" onclick="swal.close()" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Refuse
+                    </button>
+                </div>
+            </div>
+        `;
+
+        return new swal({
+            showCancelButton: false,
+            showConfirmButton: false, 
+            html: html,  
+        });
+    }
+
+    static async store(button) {
+        const addBtn = document.getElementById('add-btn');
+        const sharingKey = document.querySelector("input[name='note_sharing_key']").value;
+        const url = document.querySelector("input[name='note_add_route']").value;
+        const csrf = document.querySelector("meta[name='csrf-token']").content;
+        const icon = '<i class="fas fa-check"></i> Confirmed';
+
+        await fetch(url, {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrf,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "sharing_key" : sharingKey,
+            }),
+         }).then(response => {
+            console.log(response);
+        }).then(data => {
+            console.log(data);
+        });
+
+        addBtn.disabled = true;
         button.disabled = true;
         button.innerHTML = icon;
     }

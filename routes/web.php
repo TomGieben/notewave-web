@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\NoteController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,10 +28,16 @@ Route::controller(ApiController::class)->group(function() {
 });
 
 Route::group(['middleware' => ["auth"]], function () {
+    Route::controller(UserController::class)->group(function() {
+        Route::get('users/{user}/edit', 'edit')->name('users.edit');
+        Route::put('users/{user}', 'update')->name('users.update');
+    });
+
     Route::resource('notes', NoteController::class);
     Route::controller(NoteController::class)->group(function() {
         Route::get('notes/{note}/share', 'share')->name('notes.share');
         Route::patch('notes/{note}/restore', 'restore')->name('notes.restore');
+        Route::post('notes/add', 'add')->name('notes.add');
     });
 });
 

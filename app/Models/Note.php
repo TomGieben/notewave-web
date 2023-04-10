@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 Use Illuminate\Support\Str;
 
@@ -35,5 +36,10 @@ class Note extends Model
 
     public function getPreviewContent(): string {
         return Str::words($this->content, 10);
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, SharedNote::class);
     }
 }
