@@ -34,12 +34,24 @@ class Note extends Model
         return (bool)$this->is_public;
     }
 
+    public function isShared(): bool {
+        $sharedNotes = auth()->user()
+            ->sharedNotes()
+            ->select('note_id')
+            ->where('note_id', $this->id)
+            ->first();
+
+        return $sharedNotes ? true : false;
+    }
+
     public function getPreviewContent(): string {
         return Str::words($this->content, 10);
     }
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, SharedNote::class);
+        return $this->belongsToMany(User::class, SharedNote::class)
+            ->whereNull('shared_notes.deleted_at')
+            ->withTimestamps();
     }
 }

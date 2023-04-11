@@ -35,12 +35,14 @@
                             <textarea class="form-control" name="content" id="content" rows="20">{{ $note->content }}</textarea>
                         </div>
                     </div>
-                    <div class="col-auto">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="is-public" name="is_public" @checked($note->is_public)>
-                            <label class="form-check-label" for="is-public">Public</label>
+                    @if(!$note->isShared())
+                        <div class="col-auto">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="is-public" name="is_public" @checked($note->is_public)>
+                                <label class="form-check-label" for="is-public">Public</label>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 </div>
             </div>
 

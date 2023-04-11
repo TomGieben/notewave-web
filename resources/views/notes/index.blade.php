@@ -40,7 +40,7 @@
             {{ $notes->links() }}
         </div>
 
-        @if($sharedNotes->isNotEmpty())
+        @if($sharedNotes->isNotEmpty() && !request()->has('trashed'))
             <div class="col-12">
                 <hr class="my-4">
                 <h4>{{ __('Notes shared with me') }}</h4>

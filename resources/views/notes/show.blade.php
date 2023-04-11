@@ -23,7 +23,7 @@
         <div class="card-footer">
             <div class="row justify-content-between">
                 <div class="col-auto">
-                    <button type="button" id="add-btn" class="btn btn-secondary" onclick="Share.add()" @disabled(auth()->user()->sharedNotes()->get()->isNotEmpty())>
+                    <button type="button" id="add-btn" class="btn btn-secondary" onclick="Share.add()" @disabled($note->isShared())>
                         <i class="fas fa-cloud-arrow-down"></i>
                     </button>
                 </div>

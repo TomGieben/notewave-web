@@ -44,12 +44,33 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function notes(): HasMany {
+    public function notes(): HasMany 
+    {
         return $this->hasMany(Note::class);
     }
 
     public function sharedNotes(): BelongsToMany
     {
-        return $this->belongsToMany(Note::class, SharedNote::class);
+        return $this->belongsToMany(Note::class, SharedNote::class)
+            ->whereNull('shared_notes.deleted_at')
+            ->withTimestamps();
+    }
+
+    public function findNote(string $slug): ?Note
+    {
+        $user = $this->query()
+            ->with('notes', function($query) use ($slug) {
+                return $query->where('slug', $slug);
+            })
+            ->with('sharedNotes', function($query) use ($slug) {
+                return $query
+                    ->where('slug', $slug)
+                    ->where('is_public', true);
+            })
+            ->first();
+    
+        $foundNote = $user ? $user->notes->first() ?? $user->sharedNotes->first() : null;
+
+        return $foundNote;
     }
 }

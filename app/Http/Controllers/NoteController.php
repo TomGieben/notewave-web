@@ -52,21 +52,20 @@ class NoteController extends Controller
     }
 
     public function edit($note) {
-        $note = auth()->user()
-            ->notes()
-            ->where('slug', $note)
-            ->firstOrFail();
+        $note = auth()->user()->findNote($note) ?? abort(404);
 
         return view('notes.edit', [
             'note' => $note,
         ]);
     }
 
-    public function update(Request $request, Note $note) {
+    public function update(Request $request, $note) {
         $attributes = $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
         ]);
+
+        $note = auth()->user()->findNote($note) ?? abort(203);
 
         $attributes['is_public'] = $request->has('is_public');
         $attributes['slug'] = Str::slug($attributes['title']);
@@ -77,12 +76,18 @@ class NoteController extends Controller
     }
 
     public function destroy($note) {
-        $note = auth()->user()
-            ->notes()
-            ->where('slug', $note)
-            ->firstOrFail();
-
-        $note->delete();
+        $note = auth()->user()->findNote($note);
+        
+        if($note->isShared()) {
+            SharedNote::query()
+                ->where([
+                    'user_id' => auth()->user()->id,
+                    'note_id' => $note->id,
+                ])
+                ->delete();
+        } else {
+            $note->delete();
+        }
 
         return redirect()->route('notes.index');
     }

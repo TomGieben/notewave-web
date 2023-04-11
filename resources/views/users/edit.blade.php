@@ -7,7 +7,7 @@
             <h3 class="mt-2 ms-1">{{ __('Edit profile') }}</h3>
         </div>
         <div class="col-auto">
-            <a class="btn rounded-pill bg-primary" href="{{ url()->previous() }}" title="Back">
+            <a class="btn rounded-pill bg-primary" href="{{ route('home') }}" title="Back">
                 <i class="fas fa-times text-white"></i>
             </a>
         </div>
@@ -33,12 +33,12 @@
                         </div>
                     </div>
                     <hr class="my-4">
-                    <div class="col-md-6">
+                    {{-- <div class="col-md-6">
                         <div class="form-group mb-2">
                             <label for="password">{{ __('Current password') }}</label>
                             <input class="form-control" type="password" name="password" id="password">
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="col-md-6">
                         <div class="form-group mb-2">
                             <label for="new-password">{{ __('New password') }}</label>

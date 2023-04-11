@@ -24,6 +24,12 @@ class UserController extends Controller
             'email' => 'required|max:255',
         ]);
 
+        if($request->has('new_password')) {
+            $attributes['password'] = Hash::make($request->new_password);
+        }
+
+        $user->update($attributes);
+
         return redirect()->back();
     }
 
